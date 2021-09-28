@@ -4,16 +4,18 @@ import { io } from 'socket.io-client'
 import "./Chat.css"
 import InfoBar from '../infoBar/InfoBar';
 import Input from '../input/Input';
+import Messages from '../messages/Messages';
 
 let socket;
+const ENDPOINT = 'localhost:5000';
 
 const Chat = () => {
 
     const [name, setName] = useState("");
     const [room, setRoom] = useState("");
-    const [messages, setMessages] = useState("");
-    const [message, setMessage] = useState([]);
-    const ENDPOINT = 'localhost:5000';
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+   
 
     useEffect(() => {
 
@@ -30,7 +32,7 @@ const Chat = () => {
             socket.disconnect();
             socket.off()
         }
-    }, [ENDPOINT]);
+    }, []);
 
     useEffect(() => {
         socket.on('message', (message) => {
@@ -48,13 +50,11 @@ const Chat = () => {
         }
     }
 
-    console.log(message, messages);
-
     return (
        <div className="outerContainer">
             <div className="container">
             <InfoBar room={room}/>
-            
+            <Messages messages={messages} name={name}/>
             <Input message={message} setMessage={setMessage} sendMessage={sendMessage}/>
             </div>
         </div>

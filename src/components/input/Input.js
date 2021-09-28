@@ -3,7 +3,7 @@ import "./Input.css"
 
 const Input = ({message , setMessage , sendMessage}) => {
     return (
-        <form>
+        <form className="form">
             <input type="text" className="input" placeholder="type a message!" 
             value={message}
             onChange={(e)=>setMessage(e.target.value)}
