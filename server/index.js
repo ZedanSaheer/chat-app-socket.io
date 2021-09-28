@@ -14,13 +14,12 @@ const io = require("socket.io")(http, {
 
 
 const router = require('./router');
-const { callbackify } = require("util");
 const PORT = process.env.PORT;
 
 app.use(cors())
 app.use(router)
 
-io.on('connection',(socket)=>{
+io.on('connect',(socket)=>{
     socket.on('join',({name,room},callback)=>{
     const {error , user} = addUser({id:socket.id,name,room});
     
@@ -30,8 +29,19 @@ io.on('connection',(socket)=>{
 
     socket.broadcast.to(user.room).emit('message',{user:'admin',text:`${user.name},has joined!`});
 
-    socket.join(user,room);
+    socket.join(user.room);
+    
+    callback();
+    });
+
+    socket.on('sendMessage',(message , callback)=>{
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit('message',{user:user.name,text: message});
+
+        callback();
     })
+
     socket.on('diconnect',()=>{
         console.log('User had left');
     });
